@@ -6,3 +6,9 @@ cost:
     perKg: 400
     minimal: 350
     perKubM: 2500.00
+
+coordinates:
+  latitude-min-value:  45.0
+  latitude-max-value:  65.0
+  longitude-min-value:  30.0
+  longitude-max-value:  96.0

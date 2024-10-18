@@ -3,11 +3,13 @@ package ru.fastdelivery.usecase;
 import org.assertj.core.util.BigDecimalComparator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import ru.fastdelivery.domain.common.currency.Currency;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.dimensions.Length;
 import ru.fastdelivery.domain.common.dimensions.OuterDimensions;
 import ru.fastdelivery.domain.common.price.Price;
+import ru.fastdelivery.domain.common.route.Route;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
@@ -33,13 +35,13 @@ class TariffCalculateUseCaseTest {
         var minimalPrice = new Price(BigDecimal.TEN, currency);
         var pricePerKg = new Price(BigDecimal.valueOf(100), currency);
 
-
+        var route = Mockito.mock(Route.class);
         when(weightPriceProvider.minimalPrice()).thenReturn(minimalPrice);
         when(weightPriceProvider.costPerKg()).thenReturn(pricePerKg);
 
         var dimensions = new OuterDimensions(new Length(452), new Length(789), new Length(1356));
         var shipment = new Shipment(List.of(new Pack(new Weight(BigInteger.valueOf(1200)), dimensions)),
-                new CurrencyFactory(code -> true).create("RUB"));
+                new CurrencyFactory(code -> true).create("RUB"), route);
         var expectedPrice = new Price(BigDecimal.valueOf(120), currency);
 
         var actualPrice = tariffCalculateUseCase.calc(shipment);

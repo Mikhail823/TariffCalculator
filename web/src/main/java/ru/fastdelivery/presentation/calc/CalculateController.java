@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.dimensions.Length;
 import ru.fastdelivery.domain.common.dimensions.OuterDimensions;
+import ru.fastdelivery.domain.common.route.GeoPoint;
+import ru.fastdelivery.domain.common.route.GeoPointFactory;
+import ru.fastdelivery.domain.common.route.Route;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
@@ -31,6 +34,7 @@ import java.util.List;
 public class CalculateController {
     private final TariffCalculateUseCase tariffCalculateUseCase;
     private final CurrencyFactory currencyFactory;
+    private final GeoPointFactory geoPointFactory;
 
     @PostMapping
     @Operation(summary = "Расчет стоимости по упаковкам груза")
@@ -55,7 +59,11 @@ public class CalculateController {
                     new Length(cargoPackage.width()), new Length(cargoPackage.height()));
             packList.add(new Pack(weight, volume));
         }
-        return new Shipment(packList, currencyFactory.create(request.currencyCode()));
+
+        GeoPoint departure = geoPointFactory.create(request.departure().latitude(), request.departure().longitude());
+        GeoPoint destination = geoPointFactory.create(request.destination().latitude(), request.destination().longitude());
+        Route route = new Route(departure, destination);
+        return new Shipment(packList, currencyFactory.create(request.currencyCode()), route);
     }
 }
 
