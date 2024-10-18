@@ -12,7 +12,7 @@ public record CalculatePackagesRequest(
                 example = "[{\"weight\": 4056.45," +
                         "\"length\": 489, " +
                         "\"width\": 567," +
-                        "\"height\": 234}")
+                        "\"height\": 234}]")
         @NotNull
         @NotEmpty
         List<CargoPackage> packages,
